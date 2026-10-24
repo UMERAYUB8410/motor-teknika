@@ -1,3 +1,4 @@
+import Image from "next/image";
 import WhereWeWork from "@/components/sections/WhereWeWork";
 
 export default function Hero() {
@@ -111,83 +112,27 @@ export default function Hero() {
         {/* ── Right column: device composite ── */}
         <div
           aria-hidden="true"
-          className="hidden lg:block relative"
-          style={{ height: "370px" }}
+          className="relative hidden lg:block lg:h-[430px] lg:-ml-8"
         >
-          {/* Laptop – 78% wide */}
+          {/* Laptop – large central display */}
           <div
-            className="absolute top-0 right-0 w-[78%]"
+            className="absolute left-[7%] top-0 w-[88%]"
           >
-            {/* Screen bezel */}
-            <div
-              className="bg-[#05070a] border-[7px] border-[#1b1f27] border-b-[9px] rounded-[12px_12px_0_0] overflow-hidden"
-              style={{ boxShadow: "0 30px 70px #000, 0 0 60px rgba(255,106,19,0.22)" }}
-            >
-              {/* Screen content */}
-              <div className="h-[170px] bg-[#0c1017] p-[6px] grid grid-cols-[34px_1fr_78px] gap-[6px] text-[7px] text-muted">
-                {/* Sidebar */}
-                <div className="bg-[#10151d] rounded p-[5px] space-y-[6px]">
-                  {[...Array(6)].map((_, i) => (
-                    <div key={i} className="h-[4px] bg-[#232b38] rounded" />
-                  ))}
-                </div>
-                {/* Main */}
-                <div className="bg-[#10151d] rounded p-[5px]">
-                  <div className="h-[62px] bg-[#161c26] rounded mb-[5px] flex items-center justify-center">
-                    <svg viewBox="0 0 400 170" className="w-full h-full opacity-60" aria-hidden="true">
-                      <path d="M14 118l10-26q6-14 22-18l50-12 34-30q8-8 22-8h120q16 0 28 10l32 30 38 8q16 4 18 22l4 24H14z" fill="#1a1f29"/>
-                      <circle cx="96" cy="130" r="18" fill="#07090c"/>
-                      <circle cx="308" cy="130" r="18" fill="#07090c"/>
-                    </svg>
-                  </div>
-                  <div className="text-[6px] text-muted mb-1">Toyota Land Cruiser 2022</div>
-                  <div className="space-y-[4px]">
-                    {[...Array(3)].map((_, i) => (
-                      <div key={i} className="h-[4px] bg-[#232b38] rounded" style={{ width: `${70 - i * 15}%` }} />
-                    ))}
-                  </div>
-                </div>
-                {/* Right panel */}
-                <div className="bg-[#10151d] rounded p-[5px]">
-                  <div className="text-muted text-[6px] mb-[2px]">Current Bid</div>
-                  <div className="text-[15px] font-bold text-text leading-none mb-[8px]">$24,500</div>
-                  <div className="space-y-[4px]">
-                    <div className="h-[5px] bg-green rounded w-[70%]" />
-                    {[...Array(3)].map((_, i) => (
-                      <div key={i} className="h-[5px] bg-[#232b38] rounded" />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-            {/* Silver base */}
-            <div className="h-[11px] mx-[-2%] bg-gradient-to-b from-[#d3d8e1] to-[#8b92a0] rounded-b-[14px] shadow-[0_14px_30px_#000]" />
+            <Image src="/images/laptop-transparent.png" alt="Motor Teknika live bidding dashboard" width={1024} height={687} className="block h-auto w-full" priority />
           </div>
 
-          {/* Tablet – bottom left, 44% */}
+          {/* Tablet – overlapping lower left */}
           <div
-            className="absolute left-0 bottom-[4%] w-[44%] bg-[#0b0d12] border-[6px] border-[#1b1f27] rounded-[16px] overflow-hidden"
-            style={{ boxShadow: "0 26px 60px #000, 0 0 0 1px #3a4352" }}
+            className="absolute bottom-[2%] left-0 w-[49%]"
           >
-            <div className="h-[80px] bg-[#161c26] m-[4px] rounded-[8px]" />
-            <div className="px-[8px] pb-[6px] space-y-[5px]">
-              <div className="h-[5px] bg-[#1c232e] rounded" />
-              <div className="h-[5px] bg-[#1c232e] rounded w-3/4" />
-            </div>
+            <Image src="/images/ipad-transparent.png" alt="Motor Teknika analytics dashboard on tablet" width={1024} height={687} className="block h-auto w-full" />
           </div>
 
-          {/* Phone – bottom right 21%, bronze bezel */}
+          {/* Phone – overlapping lower right */}
           <div
-            className="absolute right-0 bottom-0 w-[21%] min-w-[96px] bg-[#0a0d12] border-[4px] border-[#b8693a] rounded-[20px] overflow-hidden"
-            style={{ boxShadow: "0 26px 60px #000" }}
+            className="absolute bottom-0 right-0 w-[24%] min-w-[120px]"
           >
-            {/* Notch */}
-            <div className="absolute top-[5px] left-1/2 -translate-x-1/2 w-[34%] h-[7px] bg-black rounded-[6px] z-10" />
-            <div className="h-[100px] bg-[#161c26] m-[6px] mt-[16px] rounded-[6px]" />
-            <div className="px-[6px] pb-[8px] space-y-[4px]">
-              <div className="h-[4px] bg-[#1c232e] rounded" />
-              <div className="h-[4px] bg-[#1c232e] rounded w-2/3" />
-            </div>
+            <Image src="/images/mobile-transparent.png" alt="Motor Teknika live auction app on mobile" width={687} height={1024} className="block h-auto w-full" />
           </div>
         </div>
       </div>

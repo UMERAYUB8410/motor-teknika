@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import Image             from "next/image";
 import FlipCard           from "@/components/ui/FlipCard";
 import Badge              from "@/components/ui/Badge";
 import Tag                from "@/components/ui/Tag";
@@ -164,13 +165,26 @@ export default function ServiceCard({ service }: { service: Service }) {
           isFeatured ? "sm:flex-row sm:gap-8" : "",
         ].join(" ")}>
 
-          {/* ── Image placeholder (same height as front image) ── */}
+          {/* ── Back image (same height as front image) ── */}
           <div className={[
+            "relative shrink-0 overflow-hidden rounded bg-panel2",
             isFeatured
-              ? "h-[220px] sm:h-auto sm:w-[40%] sm:self-stretch shrink-0"
-              : "shrink-0",
+              ? "h-[220px] sm:h-auto sm:w-[40%] sm:self-stretch"
+              : "h-[220px]",
           ].join(" ")}>
-            <ImagePlaceholder className={isFeatured ? "h-full" : ""} />
+            {service.id === "masking" ? (
+                <div className="h-full w-full p-2">
+                  <Image
+                    src="/images/masking.png"
+                    alt="MaskingTech before and after vehicle image processing"
+                    width={1024}
+                    height={576}
+                    className="h-full w-full object-contain"
+                  />
+                </div>
+            ) : (
+              <ImagePlaceholder className="h-full" />
+            )}
           </div>
 
           {/* ── Text block ── */}
@@ -199,7 +213,24 @@ export default function ServiceCard({ service }: { service: Service }) {
             </ul>
 
             {/* ── Bottom row – same position as front ── */}
-            <div className="flex items-center mt-auto pt-4 border-t border-line">
+            <div className="flex items-center justify-between mt-auto pt-4 border-t border-line">
+              {/* Link for API card only */}
+              {service.id === "api" && (
+                <a
+                  href="#integrations"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    unflip();
+                    const integrationsSection = document.getElementById("integrations");
+                    integrationsSection?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                  className="text-[11px] font-semibold text-orange hover:text-white transition-colors flex items-center gap-1"
+                  aria-label="See how API Integration connects to your systems"
+                >
+                  See how it connects ↓
+                </a>
+              )}
+
               <GhostBtn
                 onClick={unflip}
                 ariaLabel="Back to front"

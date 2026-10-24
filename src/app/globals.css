@@ -16,6 +16,9 @@
   --orange-hover:#ff8040;
   --green:       #35D07F;
   --featured-from: #1a1109;
+  --map-shadow: rgba(7, 9, 13, 0.22);
+  --map-glow: rgba(255, 106, 19, 0.24);
+  --map-center-glow: rgba(255, 106, 19, 0.42);
 }
 
 /* ── Tailwind custom colors (v4 @theme inline syntax) ── */
@@ -37,6 +40,7 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 70px;
+  overflow-x: hidden;
 }
 
 body {
@@ -45,6 +49,10 @@ body {
   font-family: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
   font-size: 15px;
   line-height: 1.5;
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  overflow-x: hidden;
 }
 
 /* ── Focus ring ── */
@@ -82,8 +90,43 @@ body {
   box-shadow: 0 8px 20px #000;
 }
 
+@keyframes integration-tile-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.integration-tile-float {
+  animation: integration-tile-float 6s ease-in-out infinite;
+}
+
+.integration-tile-float-1 { animation-delay: -1s; }
+.integration-tile-float-2 { animation-delay: -2s; }
+.integration-tile-float-3 { animation-delay: -3s; }
+.integration-tile-float-4 { animation-delay: -4s; }
+.integration-tile-float-5 { animation-delay: -5s; }
+
+.integration-tile {
+  box-shadow: 0 8px 18px var(--map-shadow);
+}
+
+.integration-tile:hover,
+.integration-tile:focus-visible {
+  box-shadow: 0 0 18px var(--map-glow);
+}
+
+.integration-center {
+  box-shadow: 0 0 34px var(--map-center-glow);
+}
+
 /* reduced motion: cross-fade instead of rotation */
 @media (prefers-reduced-motion: reduce) {
+  .integration-tile-float {
+    animation: none !important;
+  }
+  .integration-ring-motion,
+  .integration-map-dot {
+    display: none;
+  }
   .flipper {
     transition: opacity 0.3s ease !important;
     transform: none !important;
