@@ -46,13 +46,23 @@ html {
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--font-inter), var(--font-arabic), system-ui, -apple-system, "Segoe UI", sans-serif;
   font-size: 15px;
   line-height: 1.5;
   width: 100%;
   max-width: 1440px;
   margin-inline: auto;
   overflow-x: hidden;
+}
+
+/* ── Arabic ── */
+/* Letter-spacing breaks the joins between Arabic letters, and Arabic needs taller lines.
+   Unlayered rules win over Tailwind utilities, so this overrides tracking-* and leading-*. */
+:lang(ar) * {
+  letter-spacing: normal;
+}
+:lang(ar) :is(h1, h2, h3) {
+  line-height: 1.35;
 }
 
 /* ── Focus ring ── */
@@ -79,15 +89,18 @@ body {
   transform: rotateY(180deg);
 }
 
-/* ── Ecosystem preview device shadows (3D-only, no Tailwind equivalent) ── */
-.eco-laptop {
-  box-shadow: 0 8px 24px #000, 0 0 20px rgba(255, 106, 19, 0.12);
+/* ── Service card previews ── */
+@keyframes bid-flash {
+  from { color: var(--orange); transform: scale(1.06); }
+  to   { color: var(--text);   transform: none; }
 }
-.eco-tablet {
-  box-shadow: 0 8px 20px #000;
+@keyframes bid-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
 }
-.eco-phone {
-  box-shadow: 0 8px 20px #000;
+@keyframes api-packet {
+  from { left: 0; }
+  to   { left: calc(100% - 5px); }
 }
 
 @keyframes integration-tile-float {

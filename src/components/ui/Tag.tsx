@@ -5,16 +5,13 @@ const styles: Record<TagVariant, string> = {
   package: "bg-orange/15 text-orange border border-orange",
 };
 
-const labels: Record<TagVariant, string> = {
-  sold:    "Sold separately",
-  package: "Package only",
-};
-
 export default function Tag({
   variant,
+  label,
   className,
 }: {
   variant: TagVariant;
+  label: string;
   className?: string;
 }) {
   return (
@@ -25,7 +22,7 @@ export default function Tag({
         className ?? "",
       ].join(" ")}
     >
-      {labels[variant]}
+      {label}
     </span>
   );
 }

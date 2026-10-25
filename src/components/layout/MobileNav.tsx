@@ -1,20 +1,22 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import { usePathname } from "next/navigation";
 import { X, Menu } from "lucide-react";
+import { LanguageLinks } from "@/components/layout/LanguageSwitcher";
+import LocaleLink from "@/components/ui/LocaleLink";
+import { navLinks } from "@/data/navigation";
+import { stripLocale } from "@/data/locales";
+import { useDictionary } from "@/data/dictionaries/useDictionary";
 
-const navLinks = [
-  { label: "Home",        href: "#home"     },
-  { label: "Services",    href: "#services" },
-  { label: "How It Works",href: "#how"      },
-  { label: "About",       href: "#about"    },
-  { label: "Contact",     href: "#contact"  },
-];
 
 export default function MobileNav() {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+
+  const pathname = stripLocale(usePathname());
+  const t = useDictionary().nav;
 
   const close = useCallback(() => setOpen(false), []);
 
@@ -41,7 +43,7 @@ export default function MobileNav() {
     <>
       <button
         ref={triggerRef}
-        aria-label={open ? "Close menu" : "Open menu"}
+        aria-label={open ? t.closeMenu : t.openMenu}
         aria-expanded={open}
         aria-controls="mobile-nav"
         onClick={() => setOpen((v) => !v)}
@@ -55,7 +57,7 @@ export default function MobileNav() {
         id="mobile-nav"
         ref={menuRef}
         role="dialog"
-        aria-label="Navigation menu"
+        aria-label={t.menu}
         aria-modal="true"
         className={[
           "fixed inset-x-0 top-[58px] z-40 bg-panel border-b border-line px-6 py-4",
@@ -63,29 +65,33 @@ export default function MobileNav() {
           open ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none",
         ].join(" ")}
       >
-        <nav aria-label="Mobile navigation">
+        <nav aria-label={t.mobile}>
           <ul className="flex flex-col gap-1">
             {navLinks.map((link) => (
               <li key={link.href}>
-                <a
+                <LocaleLink
                   href={link.href}
                   onClick={close}
-                  className="block py-3 text-[15px] text-muted hover:text-text transition-colors"
+                  aria-current={pathname === link.href ? "page" : undefined}
+                  className={[
+                    "block py-3 text-[15px] transition-colors",
+                    pathname === link.href ? "text-orange" : "text-muted hover:text-text",
+                  ].join(" ")}
                 >
-                  {link.label}
-                </a>
+                  {t[link.key]}
+                </LocaleLink>
               </li>
             ))}
           </ul>
           <div className="mt-4 pt-4 border-t border-line flex items-center justify-between">
-            <span className="text-sm text-muted">EN ⌄</span>
-            <a
-              href="#contact"
+            <LanguageLinks onNavigate={close} />
+            <LocaleLink
+              href="/contact"
               onClick={close}
               className="inline-flex items-center gap-2 px-4 py-2 rounded bg-orange text-white text-[13px] font-semibold hover:bg-orange-hover transition-colors"
             >
-              Book a Demo →
-            </a>
+              {t.bookDemo}
+            </LocaleLink>
           </div>
         </nav>
       </div>

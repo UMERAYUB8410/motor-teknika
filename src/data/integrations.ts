@@ -1,46 +1,16 @@
-/* Integration system types */
+import type { Dictionary } from "@/data/dictionaries";
+
+/** Integration tiles; names and descriptions live in the dictionaries under integrations.items[id] */
 export type Integration = {
-  id: string;
-  name: string;
-  description: string;
+  id: keyof Dictionary["integrations"]["items"];
   iconKey: string;
 };
 
 export const integrations: Integration[] = [
-  {
-    id: "dealer-management",
-    name: "Dealer management",
-    description: "Vehicles and stock",
-    iconKey: "dealer",
-  },
-  {
-    id: "crm",
-    name: "CRM",
-    description: "Leads and customers",
-    iconKey: "crm",
-  },
-  {
-    id: "accounting",
-    name: "Accounting",
-    description: "Invoices and payments",
-    iconKey: "accounting",
-  },
-  {
-    id: "listing-portals",
-    name: "Listing portals",
-    description: "Ads and photos",
-    iconKey: "portals",
-  },
-  {
-    id: "payments",
-    name: "Payments",
-    description: "Deposits and payouts",
-    iconKey: "payments",
-  },
-  {
-    id: "website",
-    name: "Your website",
-    description: "Valuations and listings",
-    iconKey: "website",
-  },
+  { id: "dealer-management", iconKey: "dealer" },
+  { id: "crm",               iconKey: "crm" },
+  { id: "accounting",        iconKey: "accounting" },
+  { id: "listing-portals",   iconKey: "portals" },
+  { id: "payments",          iconKey: "payments" },
+  { id: "website",           iconKey: "website" },
 ];
