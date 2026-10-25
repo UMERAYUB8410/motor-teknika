@@ -1,27 +1,22 @@
-/** Complete Ecosystem front preview: mini laptop + tablet + phone composite */
+import Image from "next/image";
+
+/** Complete Ecosystem front preview: laptop + tablet + phone composite (same renders as the hero) */
 export default function EcosystemPreview() {
   return (
-    <div className="w-full h-full relative flex items-end justify-center pb-1">
-      {/* Laptop */}
-      <div className="eco-laptop absolute left-1/2 -translate-x-1/2 bottom-3 w-[68%] bg-panel border border-line-strong rounded-[6px] p-[4px]">
-        <div className="h-[40px] bg-panel2 rounded-[3px] flex items-center justify-center">
-          <div className="w-[80%] space-y-[3px]">
-            <div className="h-[3px] bg-line rounded" />
-            <div className="h-[3px] bg-line rounded w-3/4" />
-            <div className="h-[3px] bg-orange/40 rounded w-1/2" />
-          </div>
-        </div>
-        <div className="h-[4px] mx-[-2%] mt-[2px] bg-gradient-to-b from-muted to-line-strong rounded-b-[6px]" />
+    <div className="relative w-[92%] max-w-[440px] aspect-[16/11]" aria-hidden="true">
+      {/* Laptop – large central display */}
+      <div className="absolute left-[7%] top-0 w-[86%]">
+        <Image src="/images/laptop-transparent.png" alt="" width={1024} height={687} sizes="380px" className="block h-auto w-full" />
       </div>
 
-      {/* Tablet – bottom left */}
-      <div className="eco-tablet absolute left-0 bottom-0 w-[38%] bg-panel border-[3px] border-line rounded-[10px] overflow-hidden">
-        <div className="h-[30px] bg-panel2 m-1 rounded" />
+      {/* Tablet – overlapping lower left */}
+      <div className="absolute bottom-[2%] left-0 w-[48%]">
+        <Image src="/images/ipad-transparent.png" alt="" width={1024} height={687} sizes="210px" className="block h-auto w-full" />
       </div>
 
-      {/* Phone – bottom right */}
-      <div className="eco-phone absolute right-0 bottom-0 w-[19%] bg-panel border-[3px] border-orange rounded-[14px] overflow-hidden">
-        <div className="h-[36px] bg-panel2 m-[4px] rounded-[8px]" />
+      {/* Phone – overlapping lower right */}
+      <div className="absolute bottom-0 right-0 w-[22%]">
+        <Image src="/images/mobile-transparent.png" alt="" width={687} height={1024} sizes="100px" className="block h-auto w-full" />
       </div>
     </div>
   );

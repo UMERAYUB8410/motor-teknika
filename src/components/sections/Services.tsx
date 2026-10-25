@@ -1,27 +1,38 @@
 import { services } from "@/data/services";
 import ServiceCard   from "@/components/ui/ServiceCard";
+import type { LocaleCode } from "@/data/locales";
+import { getDictionary } from "@/data/dictionaries";
 
 /* Split featured (ecosystem) away from the 4-column cards */
 const gridCards     = services.filter((s) => !s.featured);
 const featuredCard  = services.find((s) => s.featured);
 
-export default function Services() {
+export default function Services({
+  lang,
+  headingLevel = "h2",
+}: {
+  lang: LocaleCode;
+  headingLevel?: "h1" | "h2";
+}) {
+  const Heading = headingLevel;
+  const t = getDictionary(lang).services;
+
   return (
     <section id="services" className="border-b border-line py-9">
       <div className="max-w-[1180px] mx-auto px-6">
         {/* Eyebrow */}
         <div className="text-[10px] font-semibold tracking-[0.14em] text-orange mb-2">
-          OUR SERVICES
+          {t.eyebrow}
         </div>
 
         {/* Heading */}
-        <h2 className="text-[clamp(26px,3.2vw,30px)] font-bold tracking-[-0.015em] leading-[1.1] m-0 mb-[6px]">
-          Powerful Tools for Every Step
-        </h2>
+        <Heading className="text-[clamp(26px,3.2vw,30px)] font-bold tracking-[-0.015em] leading-[1.1] m-0 mb-[6px]">
+          {t.title}
+        </Heading>
 
         {/* Subtitle */}
         <p className="text-muted text-[13px] m-0 mb-6">
-          Get the tools you need — individually or as a complete ecosystem.
+          {t.subtitle}
         </p>
 
         {/* 4-card grid (Evaluation, Masking, Auction, API) */}

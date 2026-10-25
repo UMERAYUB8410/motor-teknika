@@ -5,8 +5,10 @@ import {
   useRef,
   useCallback,
   useEffect,
+  useId,
   type ReactNode,
 } from "react";
+import { flushSync } from "react-dom";
 
 interface FlipCardProps {
   front: (controls: FlipControls) => ReactNode;
@@ -17,17 +19,25 @@ interface FlipCardProps {
 export interface FlipControls {
   flip:      () => void;
   unflip:    () => void;
-  toggle:    () => void;
   isFlipped: boolean;
 }
 
 export default function FlipCard({ front, back, className }: FlipCardProps) {
   const [flipped, setFlipped] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const id = useId();
 
-  const flip   = useCallback(() => setFlipped(true),  []);
-  const unflip = useCallback(() => setFlipped(false), []);
-  const toggle = useCallback(() => setFlipped((v) => !v), []);
+  /* The hidden face is inert, so move focus to the first control on the visible face */
+  const flipTo = useCallback((next: boolean) => {
+    flushSync(() => setFlipped(next));
+    document
+      .getElementById(`${id}-${next ? "back" : "front"}`)
+      ?.querySelector<HTMLElement>("button, a[href]")
+      ?.focus({ preventScroll: true });
+  }, [id]);
+
+  const flip   = useCallback(() => flipTo(true),  [flipTo]);
+  const unflip = useCallback(() => flipTo(false), [flipTo]);
 
   /* Escape key unflips */
   useEffect(() => {
@@ -45,15 +55,7 @@ export default function FlipCard({ front, back, className }: FlipCardProps) {
     setFlipped(false);
   }, []);
 
-  /* Touch: tap outside buttons toggles */
-  const handleTouchEnd = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
-    const target = e.target as HTMLElement;
-    if (target.tagName !== "BUTTON" && !target.closest("button")) {
-      toggle();
-    }
-  }, [toggle]);
-
-  const controls: FlipControls = { flip, unflip, toggle, isFlipped: flipped };
+  const controls: FlipControls = { flip, unflip, isFlipped: flipped };
 
   return (
     <div
@@ -64,12 +66,12 @@ export default function FlipCard({ front, back, className }: FlipCardProps) {
         className ?? "",
       ].join(" ")}
       onMouseLeave={handleMouseLeave}
-      onTouchEnd={handleTouchEnd}
     >
       {/* perspective wrapper – 3D transform lives in .flipper CSS class */}
       <div className="flipper w-full h-full" style={{ perspective: "1400px" }}>
         {/* FRONT */}
         <div
+          id={`${id}-front`}
           className="face face-front flex flex-col"
           aria-hidden={flipped}
           inert={flipped || undefined}
@@ -79,6 +81,7 @@ export default function FlipCard({ front, back, className }: FlipCardProps) {
 
         {/* BACK */}
         <div
+          id={`${id}-back`}
           className="face face-back flex flex-col"
           aria-hidden={!flipped}
           inert={!flipped || undefined}

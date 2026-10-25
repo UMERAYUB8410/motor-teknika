@@ -1,7 +1,11 @@
 import Image from "next/image";
 import WhereWeWork from "@/components/sections/WhereWeWork";
+import type { LocaleCode } from "@/data/locales";
+import { getDictionary } from "@/data/dictionaries";
 
-export default function Hero() {
+export default function Hero({ lang }: { lang: LocaleCode }) {
+  const t = getDictionary(lang).hero;
+
   return (
     <section
       id="home"
@@ -37,21 +41,23 @@ export default function Hero() {
         <div>
           {/* Tags row */}
           <div className="flex flex-wrap gap-3 mb-[14px] text-[10px] font-semibold tracking-[0.14em] text-orange uppercase">
-            <span>AI Powered</span>
-            <span>➜ Real-Time Auctions</span>
-            <span>➜ White-Label</span>
+            {t.tags.map((tag, i) => (
+              <span key={tag}>
+                {i > 0 && <span aria-hidden="true" className="inline-block me-1 rtl:-scale-x-100">➜</span>}
+                {tag}
+              </span>
+            ))}
           </div>
 
           {/* H1 */}
           <h1 className="text-[clamp(38px,5vw,56px)] leading-[1] tracking-[-0.025em] font-bold m-0 mb-5">
-            The Complete Automotive Trade{" "}
-            <em className="not-italic text-orange block">Ecosystem.</em>
+            {t.titleStart}{" "}
+            <em className="not-italic text-orange block">{t.titleEnd}</em>
           </h1>
 
           {/* Lead */}
           <p className="text-[13px] text-[#c9cfd9] max-w-[360px] mb-[22px]">
-            Motor Teknika brings together AI, real-time bidding and smart automation
-            to help you source, value, and sell vehicles faster — all under your own brand.
+            {t.lead}
           </p>
 
           {/* CTAs */}
@@ -60,13 +66,13 @@ export default function Hero() {
               href="#services"
               className="inline-flex items-center gap-2 px-5 py-[11px] rounded bg-orange text-white text-[13px] font-semibold hover:bg-orange-hover transition-colors"
             >
-              Explore Our Solutions →
+              {t.explore}
             </a>
             <a
               href="#contact"
               className="inline-flex items-center gap-2 px-5 py-[11px] rounded border border-[#4a5262] text-white text-[13px] font-semibold hover:border-orange transition-colors"
             >
-              ▦&nbsp; Book a Demo
+              ▦&nbsp; {t.bookDemo}
             </a>
           </div>
 
@@ -74,7 +80,7 @@ export default function Hero() {
           <div className="flex flex-wrap gap-[26px] text-[11px] text-muted">
             {[
               {
-                label: "White-label platform",
+                label: t.trust[0],
                 icon: (
                   <svg viewBox="0 0 24 24" className="w-5 h-5 stroke-orange fill-none stroke-[1.6]">
                     <path d="M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z"/>
@@ -83,7 +89,7 @@ export default function Hero() {
                 ),
               },
               {
-                label: "Secure & scalable",
+                label: t.trust[1],
                 icon: (
                   <svg viewBox="0 0 24 24" className="w-5 h-5 stroke-orange fill-none stroke-[1.6]">
                     <rect x="5" y="11" width="14" height="10" rx="2"/>
@@ -92,7 +98,7 @@ export default function Hero() {
                 ),
               },
               {
-                label: "Built for global markets",
+                label: t.trust[2],
                 icon: (
                   <svg viewBox="0 0 24 24" className="w-5 h-5 stroke-orange fill-none stroke-[1.6]">
                     <circle cx="12" cy="12" r="9"/>
@@ -118,27 +124,27 @@ export default function Hero() {
           <div
             className="absolute left-[7%] top-0 w-[88%]"
           >
-            <Image src="/images/laptop-transparent.png" alt="Motor Teknika live bidding dashboard" width={1024} height={687} className="block h-auto w-full" priority />
+            <Image src="/images/laptop-transparent.png" alt={t.laptopAlt} width={1024} height={687} className="block h-auto w-full" priority />
           </div>
 
           {/* Tablet – overlapping lower left */}
           <div
             className="absolute bottom-[2%] left-0 w-[49%]"
           >
-            <Image src="/images/ipad-transparent.png" alt="Motor Teknika analytics dashboard on tablet" width={1024} height={687} className="block h-auto w-full" />
+            <Image src="/images/ipad-transparent.png" alt={t.tabletAlt} width={1024} height={687} className="block h-auto w-full" />
           </div>
 
           {/* Phone – overlapping lower right */}
           <div
             className="absolute bottom-0 right-0 w-[24%] min-w-[120px]"
           >
-            <Image src="/images/mobile-transparent.png" alt="Motor Teknika live auction app on mobile" width={687} height={1024} className="block h-auto w-full" />
+            <Image src="/images/mobile-transparent.png" alt={t.phoneAlt} width={687} height={1024} className="block h-auto w-full" />
           </div>
         </div>
       </div>
 
       {/* Where We Work bar */}
-      <WhereWeWork />
+      <WhereWeWork lang={lang} />
     </section>
   );
 }
