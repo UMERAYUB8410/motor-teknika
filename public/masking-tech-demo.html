@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MaskingTech preview</title>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #0b0e14; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; user-select: none; -webkit-user-select: none; touch-action: pan-y; }
+  #stage { position: relative; width: 100%; height: 100%; overflow: hidden; cursor: ew-resize;
+    background-color: #0b0e14;
+    background-image: linear-gradient(to right, rgba(255,255,255,.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.03) 1px, transparent 1px);
+    background-size: 24px 24px; }
+  .layer { position: absolute; inset: 0; pointer-events: none; }
+  .layer svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  #after { clip-path: inset(0 0 0 50%); }
+  .chip { position: absolute; bottom: 10px; display: flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 6px;
+    background: rgba(0,0,0,.72); border: 1px solid rgba(255,255,255,.1); color: #cbd5e1; font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+  .chip i { width: 7px; height: 7px; border-radius: 50%; display: block; }
+  #laser { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: #ff7824; transform: translateX(-50%); z-index: 5;
+    box-shadow: 0 0 10px #ff7824, 0 0 22px #ea580c, 0 0 38px rgba(255,120,36,.65); pointer-events: none; }
+  #handle { position: absolute; top: 50%; left: 50%; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%;
+    background: #0f131a; border: 2px solid #ff7824; box-shadow: 0 0 16px rgba(249,115,22,.6); display: flex; align-items: center; justify-content: center; }
+</style>
+</head>
+<body>
+<div id="stage">
+
+  <!-- Shared car, drawn once and reused by both layers -->
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <linearGradient id="bronze" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5a4d41"/><stop offset=".35" stop-color="#3b322a"/><stop offset=".7" stop-color="#241f1a"/><stop offset="1" stop-color="#161311"/></linearGradient>
+      <linearGradient id="hood" x1=".3" y1="0" x2=".7" y2="1"><stop offset="0" stop-color="#82705f"/><stop offset=".4" stop-color="#4d4137"/><stop offset="1" stop-color="#28221c"/></linearGradient>
+      <linearGradient id="chrome" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8a929e"/><stop offset=".25" stop-color="#cbd5e1"/><stop offset=".5" stop-color="#fff"/><stop offset=".75" stop-color="#94a3b8"/><stop offset="1" stop-color="#64748b"/></linearGradient>
+      <radialGradient id="shadow"><stop offset="0" stop-opacity=".9"/><stop offset=".6" stop-opacity=".6"/><stop offset="1" stop-opacity="0"/></radialGradient>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#18202c"/><stop offset="1" stop-color="#343c4a"/></linearGradient>
+      <linearGradient id="road" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a1e27"/><stop offset="1" stop-color="#0e1117"/></linearGradient>
+      <radialGradient id="wall" cx=".5" cy=".3" r=".8"><stop offset="0" stop-color="#2a3342"/><stop offset=".5" stop-color="#141822"/><stop offset="1" stop-color="#0a0d14"/></radialGradient>
+      <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e2430"/><stop offset=".4" stop-color="#11151e"/><stop offset="1" stop-color="#07090e"/></linearGradient>
+
+      <g id="car">
+        <defs>
+          <linearGradient id="paint" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a6a4c"/><stop offset=".35" stop-color="#5c4531"/><stop offset=".75" stop-color="#2f241b"/><stop offset="1" stop-color="#17110d"/></linearGradient>
+          <linearGradient id="hoodP" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b08a65"/><stop offset=".5" stop-color="#6b4f36"/><stop offset="1" stop-color="#3a2b1f"/></linearGradient>
+          <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b3a4d"/><stop offset="1" stop-color="#0e151f"/></linearGradient>
+          <linearGradient id="bump" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2f39"/><stop offset="1" stop-color="#0d1015"/></linearGradient>
+          <radialGradient id="glow"><stop offset="0" stop-color="#e0f2fe"/><stop offset=".4" stop-color="#67e8f9" stop-opacity=".7"/><stop offset="1" stop-color="#22d3ee" stop-opacity="0"/></radialGradient>
+        </defs>
+        <ellipse cx="400" cy="402" rx="270" ry="20" fill="url(#shadow)"/>
+        <!-- tyres -->
+        <rect x="203" y="290" width="44" height="112" rx="12" fill="#0b0c0f" stroke="#262b33" stroke-width="3"/>
+        <rect x="553" y="290" width="44" height="112" rx="12" fill="#0b0c0f" stroke="#262b33" stroke-width="3"/>
+        <path d="M212 320 H238 M212 340 H238 M212 360 H238 M562 320 H588 M562 340 H588 M562 360 H588" stroke="#1c2027" stroke-width="3"/>
+        <!-- roof rails + body -->
+        <path d="M296 92 H504" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+        <path d="M205 300 V252 Q205 216 234 202 L268 124 Q280 98 312 98 H488 Q520 98 532 124 L566 202 Q595 216 595 252 V300 Z" fill="url(#paint)"/>
+        <!-- windscreen -->
+        <path d="M282 128 Q290 112 312 112 H488 Q510 112 518 128 L538 190 H262 Z" fill="url(#glass)" stroke="#0a0d12" stroke-width="3"/>
+        <!-- hood -->
+        <path d="M234 202 L262 190 H538 L566 202 Q595 216 595 252 V270 H205 V252 Q205 216 234 202 Z" fill="url(#hoodP)"/>
+        <path d="M262 190 H538" stroke="#fff" stroke-opacity=".35" stroke-width="2"/>
+        <path d="M330 196 L345 262 M470 196 L455 262" stroke="#fff" stroke-opacity=".12" stroke-width="3"/>
+        <!-- mirrors -->
+        <path d="M262 186 L234 182 Q226 194 238 204 L264 198 Z" fill="#4a3727" stroke="#120d09" stroke-width="2"/>
+        <path d="M538 186 L566 182 Q574 194 562 204 L536 198 Z" fill="#4a3727" stroke="#120d09" stroke-width="2"/>
+        <!-- lower bumper -->
+        <path d="M228 270 H572 V362 Q572 376 558 376 H242 Q228 376 228 362 Z" fill="url(#bump)" stroke="#0a0c10" stroke-width="2"/>
+        <!-- grille -->
+        <path d="M330 232 H470 L476 300 H324 Z" fill="#07090c" stroke="#3b4350" stroke-width="2"/>
+        <g stroke="#cbd5e1" stroke-width="4" stroke-linecap="round" opacity=".9">
+          <path d="M334 244 H466 M333 258 H467 M331 272 H469 M329 286 H471"/>
+        </g>
+        <ellipse cx="400" cy="266" rx="22" ry="14" fill="#10141a" stroke="#e2e8f0" stroke-width="3"/>
+        <ellipse cx="400" cy="266" rx="12" ry="7" fill="none" stroke="#e2e8f0" stroke-width="2"/>
+        <!-- headlights -->
+        <path d="M216 240 Q216 226 232 224 L316 222 Q330 222 331 236 L329 254 Q327 266 313 266 H230 Q216 264 216 250 Z" fill="#06080c" stroke="#475569" stroke-width="2"/>
+        <path d="M584 240 Q584 226 568 224 L484 222 Q470 222 469 236 L471 254 Q473 266 487 266 H570 Q584 264 584 250 Z" fill="#06080c" stroke="#475569" stroke-width="2"/>
+        <path d="M226 236 L320 232 M574 236 L480 232" stroke="#a5f3fc" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="296" cy="251" r="16" fill="url(#glow)"/><circle cx="296" cy="251" r="6" fill="#fff"/>
+        <circle cx="504" cy="251" r="16" fill="url(#glow)"/><circle cx="504" cy="251" r="6" fill="#fff"/>
+        <!-- intake, fog lamps -->
+        <path d="M262 304 H538 L526 326 H274 Z" fill="#050608" stroke="#2b313b" stroke-width="2"/>
+        <circle cx="250" cy="330" r="9" fill="#0b1220" stroke="#64748b" stroke-width="2"/><circle cx="250" cy="330" r="4" fill="#7dd3fc"/>
+        <circle cx="550" cy="330" r="9" fill="#0b1220" stroke="#64748b" stroke-width="2"/><circle cx="550" cy="330" r="4" fill="#7dd3fc"/>
+        <rect x="290" y="370" width="220" height="6" rx="3" fill="#94a3b8"/>
+      </g>
+    </defs>
+  </svg>
+
+  <!-- BEFORE -->
+  <div class="layer" id="before">
+    <svg viewBox="30 55 740 390" preserveAspectRatio="xMidYMid meet">
+      <rect x="-1200" y="-600" width="3200" height="890" fill="url(#sky)"/>
+      <rect x="-1200" y="290" width="3200" height="900" fill="url(#road)"/>
+      <g opacity=".25" stroke="#4a5568" stroke-width="1.5">
+        <path d="M-400 130 H1200 M-400 190 H1200 M-400 250 H1200"/>
+        <path d="M-400 90V290M-360 90V290M-320 90V290M-280 90V290M-240 90V290M-200 90V290M-160 90V290M-120 90V290M-80 90V290M-40 90V290M0 90V290M40 90V290M80 90V290M120 90V290M160 90V290M200 90V290M240 90V290M280 90V290M320 90V290M360 90V290M400 90V290M440 90V290M480 90V290M520 90V290M560 90V290M600 90V290M640 90V290M680 90V290M720 90V290M760 90V290M800 90V290M840 90V290M880 90V290M920 90V290M960 90V290M1000 90V290M1040 90V290M1080 90V290M1120 90V290M1160 90V290"/>
+      </g>
+      <use href="#car"/>
+      <!-- visible driver -->
+      <ellipse cx="400" cy="150" rx="15" ry="17" fill="#8a6a55"/>
+      <path d="M368 190 C370 172 386 168 400 168 C414 168 430 172 432 190 Z" fill="#3f3731"/>
+      <path d="M400 168 V190" stroke="#222" stroke-width="2"/>
+      <!-- real plate -->
+      <rect x="340" y="340" width="120" height="28" rx="4" fill="#f8fafc" stroke="#64748b" stroke-width="2"/>
+      <text x="400" y="359" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="16" font-weight="800" fill="#0f172a" text-anchor="middle" letter-spacing="3">DX8 1234</text>
+      <!-- detection boxes -->
+      <g fill="rgba(239,68,68,.12)" stroke="#ef4444" stroke-width="2.5">
+        <rect x="358" y="128" width="84" height="62" rx="4"/>
+        <rect x="334" y="334" width="132" height="40" rx="4"/>
+      </g>
+      <g font-family="ui-monospace, Menlo, Consolas, monospace" font-size="11" font-weight="700" fill="#f87171">
+        <rect x="358" y="112" width="62" height="14" rx="3" fill="#000" opacity=".8"/><text x="363" y="123">FACE</text>
+        <rect x="334" y="318" width="58" height="14" rx="3" fill="#000" opacity=".8"/><text x="339" y="329">PLATE</text>
+      </g>
+    </svg>
+    <div class="chip" style="left:10px"><i style="background:#ef4444"></i>Before</div>
+  </div>
+
+  <!-- AFTER -->
+  <div class="layer" id="after">
+    <svg viewBox="30 55 740 390" preserveAspectRatio="xMidYMid meet">
+      <rect x="-1200" y="-600" width="3200" height="890" fill="url(#wall)"/>
+      <rect x="-1200" y="290" width="3200" height="900" fill="url(#floor)"/>
+      <ellipse cx="400" cy="300" rx="420" ry="4" fill="#38bdf8" opacity=".14"/>
+      
+      <use href="#car"/>
+      <!-- privacy-tinted windshield (driver hidden) -->
+      <path d="M282 128 Q290 112 312 112 H488 Q510 112 518 128 L538 190 H262 Z" fill="#070b12" stroke="#38bdf8" stroke-width="1.5" stroke-opacity=".5"/>
+      <path d="M320 114 H420 L380 188 H290 Z" fill="#fff" opacity=".1"/>
+      <!-- branded plate -->
+      <rect x="338" y="338" width="124" height="30" rx="5" fill="#131720" stroke="#f97316" stroke-width="2"/>
+      <rect x="342" y="342" width="116" height="22" rx="3" fill="#1f2633"/>
+      <text x="400" y="358" font-family="ui-monospace, Menlo, Consolas, monospace" font-size="13" font-weight="800" fill="#f97316" text-anchor="middle" letter-spacing="2">YOUR LOGO</text>
+    </svg>
+    <div class="chip" style="right:10px"><i style="background:#34d399"></i>After</div>
+  </div>
+
+  <!-- LASER -->
+  <div id="laser">
+    <div id="handle">
+      <svg width="16" height="16" fill="none" stroke="#ff7824" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l-4 3 4 3m8-6l4 3-4 3"/></svg>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var stage = document.getElementById('stage');
+  var after = document.getElementById('after');
+  var laser = document.getElementById('laser');
+  var pos = 50, dir = 1, dragging = false, hovering = false, idleUntil = 0;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function set(p) {
+    pos = Math.max(4, Math.min(96, p));
+    after.style.clipPath = 'inset(0 0 0 ' + pos + '%)';
+    laser.style.left = pos + '%';
+  }
+  function fromX(x) {
+    var r = stage.getBoundingClientRect();
+    set((x - r.left) / r.width * 100);
+  }
+  function touch() { idleUntil = performance.now() + 2500; }
+
+  stage.addEventListener('pointerdown', function (e) { dragging = true; touch(); fromX(e.clientX); try { stage.setPointerCapture(e.pointerId); } catch (_) {} });
+  stage.addEventListener('pointermove', function (e) { if (dragging) { touch(); fromX(e.clientX); } });
+  stage.addEventListener('pointerup', function () { dragging = false; touch(); });
+  stage.addEventListener('pointercancel', function () { dragging = false; });
+  stage.addEventListener('pointerenter', function () { hovering = true; });
+  stage.addEventListener('pointerleave', function () { hovering = false; });
+
+  var last = performance.now();
+  function tick(now) {
+    var dt = Math.min(48, now - last); last = now;
+    if (!reduce && !dragging && !hovering && now > idleUntil) {
+      pos += dir * dt * 0.018; // ~18% per second
+      if (pos >= 92) { pos = 92; dir = -1; }
+      if (pos <= 8)  { pos = 8;  dir = 1; }
+      set(pos);
+    }
+    requestAnimationFrame(tick);
+  }
+  set(50);
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

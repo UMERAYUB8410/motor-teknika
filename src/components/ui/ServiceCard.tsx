@@ -15,6 +15,7 @@ import EvaluationPreview from "@/components/previews/EvaluationPreview";
 import AuctionPreview    from "@/components/previews/AuctionPreview";
 import ApiPreview        from "@/components/previews/ApiPreview";
 import EcosystemPreview  from "@/components/previews/EcosystemPreview";
+import MaskingTechDemo    from "@/components/previews/MaskingTechDemo";
 
 type PreviewLabels = Dictionary["services"]["previews"];
 
@@ -111,14 +112,18 @@ export default function ServiceCard({ service }: { service: Service }) {
               : "h-[220px] mb-5",
           ].join(" ")}>
             {service.previewImage ? (
-              <Image
-                src={service.previewImage.src}
-                alt={"imageAlt" in copy ? copy.imageAlt : ""}
-                width={service.previewImage.width}
-                height={service.previewImage.height}
-                sizes="(min-width: 1280px) 270px, (min-width: 640px) 50vw, 100vw"
-                className="h-full w-full object-contain"
-              />
+              service.id === "masking" ? (
+                <MaskingTechDemo />
+              ) : (
+                <Image
+                  src={service.previewImage.src}
+                  alt={"imageAlt" in copy ? copy.imageAlt : ""}
+                  width={service.previewImage.width}
+                  height={service.previewImage.height}
+                  sizes="(min-width: 1280px) 270px, (min-width: 640px) 50vw, 100vw"
+                  className="block h-full w-full object-contain"
+                />
+              )
             ) : (
               previewMap[service.id]?.(t.previews)
             )}
